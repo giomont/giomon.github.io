@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Historia de Colombia</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23555" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 15px;
+            padding-right: 30px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #007bff; /* Un azul más llamativo para el botón de "Evaluar" */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            margin-top: 20px; /* Espacio entre el botón de envío original y este */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        #resultadoTest {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        #resultadoTest h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        #resultadoTest p {
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .correcto {
+            color: green;
+            font-weight: bold;
+        }
+
+        .incorrecto {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Cuéntanos qué sabes de la Historia de Colombia</h2>
+        <form id="colombiaForm">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+                <div class="error-message" id="nombreError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo Electrónico:</label>
+                <input type="email" id="email" name="email">
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pregunta1">¿Quiénes vivían en el territorio de Colombia antes de la llegada de los españoles?</label>
+                <select id="pregunta1" name="pregunta1">
+                    <option value="">Selecciona una opción</option>
+                    <option value="a">Los criollos y los mestizos.</option>
+                    <option value="b">Los españoles y los africanos.</option>
+                    <option value="c">Las comunidades indígenas.</option>
+                    <option value="d">Los ingleses y los franceses.</option>
+                </select>
+                <div class="error-message" id="pregunta1Error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pregunta2">¿Qué evento importante marcó el inicio del proceso de independencia de Colombia?</label>
+                <select id="pregunta2" name="pregunta2">
+                    <option value="">Selecciona una opción</option>
+                    <option value="a">La Batalla de Boyacá.</option>
+                    <option value="b">La fundación de Santafé de Bogotá.</option>
+                    <option value="c">El Grito de Independencia del 20 de julio de 1810.</option>
+                    <option value="d">La creación de la Gran Colombia.</option>
+                </select>
+                <div class="error-message" id="pregunta2Error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="pregunta3">¿Quién fue un líder importante en la lucha por la independencia de Colombia?</label>
+                <select id="pregunta3" name="pregunta3">
+                    <option value="">Selecciona una opción</option>
+                    <option value="a">Cristóbal Colón.</option>
+                    <option value="b">Simón Bolívar.</option>
+                    <option value="c">Rafael Núñez.</option>
+                    <option value="d">Gonzalo Jiménez de Quesada.</option>
+                </select>
+                <div class="error-message" id="pregunta3Error"></div>
+            </div>
+
+            <button type="submit">Enviar tus respuestas</button>
+        </form>
+
+        <div id="mensajeResultado" style="margin-top: 15px; font-weight: bold;"></div>
+
+        <div id="resultadoTest" style="display: none;">
+            <h3>Resultado del Test</h3>
+            <div id="resultadoPregunta1"></div>
+            <div id="resultadoPregunta2"></div>
+            <div id="resultadoPregunta3"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('colombiaForm');
+            const nombreInput = document.getElementById('nombre');
+            const emailInput = document.getElementById('email');
+            const pregunta1Select = document.getElementById('pregunta1');
+            const pregunta2Select = document.getElementById('pregunta2');
+            const pregunta3Select = document.getElementById('pregunta3');
+            const mensajeResultadoDiv = document.getElementById('mensajeResultado');
+            const resultadoTestDiv = document.getElementById('resultadoTest');
+            const resultadoPregunta1Div = document.getElementById('resultadoPregunta1');
+            const resultadoPregunta2Div = document.getElementById('resultadoPregunta2');
+            const resultadoPregunta3Div = document.getElementById('resultadoPregunta3');
+            const nombreErrorDiv = document.getElementById('nombreError');
+            const emailErrorDiv = document.getElementById('emailError');
+            const pregunta1ErrorDiv = document.getElementById('pregunta1Error');
+            const pregunta2ErrorDiv = document.getElementById('pregunta2Error');
+            const pregunta3ErrorDiv = document.getElementById('pregunta3Error');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                let isValid = true;
+
+                // Validar el campo de nombre
+                if (nombreInput.value.trim() === '') {
+                    nombreErrorDiv.textContent = 'Por favor, ingresa tu nombre.';
+                    isValid = false;
+                } else {
+                    nombreErrorDiv.textContent = '';
+                }
+
+                // Validar el campo de correo electrónico (opcional)
+                if (emailInput.value.trim() !== '' && !isValidEmail(emailInput.value.trim())) {
+                    emailErrorDiv.textContent = 'Por favor, ingresa un correo electrónico válido.';
+                    isValid = false;
+                } else {
+                    emailErrorDiv.textContent = '';
+                }
+
+                // Validar las preguntas del test
+                if (pregunta1Select.value === '') {
+                    pregunta1ErrorDiv.textContent = 'Por favor, selecciona una respuesta.';
+                    isValid = false;
+                } else {
+                    pregunta1ErrorDiv.textContent = '';
+                }
+
+                if (pregunta2Select.value === '') {
+                    pregunta2ErrorDiv.textContent = 'Por favor, selecciona una respuesta.';
+                    isValid = false;
+                } else {
+                    pregunta2ErrorDiv.textContent = '';
+                }
+
+                if (pregunta3Select.value === '') {
+                    pregunta3ErrorDiv.textContent = 'Por favor, selecciona una respuesta.';
+                    isValid = false;
+                } else {
+                    pregunta3ErrorDiv.textContent = '';
+                }
+
+                if (isValid) {
+                    const formData = new FormData(form);
+                    const nombre = formData.get('nombre');
+                    const respuesta1 = formData.get('pregunta1');
+                    const respuesta2 = formData.get('pregunta2');
+                    const respuesta3 = formData.get('pregunta3');
+
+                    mensajeResultadoDiv.textContent = `¡Gracias, ${nombre}! Has enviado tus respuestas. Revisa el resultado del test abajo.`;
+                    resultadoTestDiv.style.display = 'block';
+
+                    mostrarResultadoPregunta(1, respuesta1, 'c', 'Las comunidades indígenas.', resultadoPregunta1Div);
+                    mostrarResultadoPregunta(2, respuesta2, 'c', 'El Grito de Independencia del 20 de julio de 1810.', resultadoPregunta2Div);
+                    mostrarResultadoPregunta(3, respuesta3, 'b', 'Simón Bolívar.', resultadoPregunta3Div);
+
+                    // Ocultar el mensaje de "gracias" después de mostrar el resultado
+                    setTimeout(() => {
+                        mensajeResultadoDiv.textContent = '';
+                    }, 3000);
+
+                    // No reseteamos el formulario para que el usuario vea sus respuestas
+                } else {
+                    mensajeResultadoDiv.textContent = 'Por favor, responde todas las preguntas del test.';
+                    resultadoTestDiv.style.display = 'none'; // Asegurarse de que el resultado esté oculto si hay errores
+                }
+            });
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function mostrarResultadoPregunta(numeroPregunta, respuestaUsuario, respuestaCorrectaLetra, respuestaCorrectaTexto, elementoResultado) {
+                const esCorrecta = respuestaUsuario === respuestaCorrectaLetra;
+                const claseResultado = esCorrecta ? 'correcto' : 'incorrecto';
+                const textoResultado = esCorrecta ? 'Correcto' : 'Incorrecto';
+
+                elementoResultado.innerHTML = `Pregunta ${numeroPregunta}: Tu respuesta fue la opción <span class="${claseResultado}">${respuestaUsuario.toUpperCase()}</span>. `;
+                elementoResultado.innerHTML += `La respuesta correcta era la opción <span class="correcto">${respuestaCorrectaLetra.toUpperCase()}</span>: ${respuestaCorrectaTexto}.`;
+            }
+        });
+    </script>
+</body>
+</html>
